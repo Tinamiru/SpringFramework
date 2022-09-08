@@ -110,6 +110,14 @@
 		</div>
 		
     </section> 
+    
+   	<script>
+		<c:if test="${from eq 'regist'}" >
+			window.close();
+			window.location.reload();
+			alert("공지사항 등록이 성공했습니다.");
+		</c:if>
+	</script>
 
 
 
