@@ -22,12 +22,12 @@ public class NoticeDAOImpl implements kr.or.ddit.dao.NoticeDAO {
 	}
 	
 	@Override
-	public List<NoticeVO> selectSearchNoticeList(Criteria cri) throws SQLException {
+	public List<NoticeVO> selectSearchNoticeList(Criteria cri) throws SQLException {		
 		return noticeDAO.selectSearchNoticeList(session, cri);
 	}
 
 	@Override
-	public int selectSearchNoticeListCount(Criteria cri) throws SQLException {
+	public int selectSearchNoticeListCount(Criteria cri) throws SQLException {		
 		return noticeDAO.selectSearchNoticeListCount(session, cri);
 	}
 
@@ -39,26 +39,31 @@ public class NoticeDAOImpl implements kr.or.ddit.dao.NoticeDAO {
 	@Override
 	public void increaseViewCount(int nno) throws SQLException {
 		noticeDAO.increaseViewCount(session, nno);
+		
 	}
 
 	@Override
-	public int selectNoticeSequenceNextValue() throws SQLException {
+	public int selectNoticeSequenceNextValue() throws SQLException {		
 		return noticeDAO.selectNoticeSequenceNextValue(session);
 	}
 
 	@Override
-	public void insertNotice(NoticeVO Notice) throws SQLException {
-		noticeDAO.insertNotice(session, Notice);
+	public void insertNotice(NoticeVO notice) throws SQLException {
+		noticeDAO.insertNotice(session, notice);
+		
 	}
 
 	@Override
-	public void updateNotice(NoticeVO Notice) throws SQLException {
-		noticeDAO.updateNotice(session, Notice);
+	public void updateNotice(NoticeVO notice) throws SQLException {
+		noticeDAO.updateNotice(session, notice);
+		
+		
 	}
 
 	@Override
 	public void deleteNotice(int nno) throws SQLException {
 		noticeDAO.deleteNotice(session, nno);
+		
 	}
 
 }

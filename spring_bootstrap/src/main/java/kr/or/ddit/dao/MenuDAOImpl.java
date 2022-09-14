@@ -9,19 +9,19 @@ import com.jsp.dao.MenuDAO;
 import com.jsp.dto.MenuVO;
 
 public class MenuDAOImpl implements kr.or.ddit.dao.MenuDAO {
-
+	
 	private SqlSession session;
-
+	private MenuDAO menuDAO;
+	
 	public void setSession(SqlSession session) {
 		this.session = session;
 	}
 
-	private MenuDAO menuDAO;
-
 	public void setMenuDAO(MenuDAO menuDAO) {
 		this.menuDAO = menuDAO;
 	}
-
+	
+	
 	@Override
 	public List<MenuVO> selectMainMenu() throws SQLException {
 		return menuDAO.selectMainMenu(session);

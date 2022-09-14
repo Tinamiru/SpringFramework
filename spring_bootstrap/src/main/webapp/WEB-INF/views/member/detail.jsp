@@ -110,23 +110,25 @@ window.onload=function(){
 </script>
 
 <script>
-	<c:if test="${from eq 'modify'}" >
-		alert("${member.name}님의 정보가 수정되었습니다.");	
-		
-		if(${parentReload}){			
-			if(confirm('로그인 사용자의 정보가 수정되었습니다.\n현재 화면을 닫고 새로고침 하시겠습니까?')){
-				window.close();
-				window.opener.parent.location.reload(true);
-			}	
-		}
-	</c:if>
+<c:if test="${from eq 'modify'}" >
+	alert("${member.name}님의 정보가 수정되었습니다.");	
 	
-	<c:if test="${from eq 'remove'}" >
-		alert('${removeMember.name}님의 정보가 삭제되었습니다.');
-		if(${empty loginUser}){
-			window.opener.parent.location.href="<%=request.getContextPath()%>/member/list.do";
-		}
-		window.close();
-	</c:if>
+	if(${parentReload}){			
+		if(confirm('로그인 사용자의 정보가 수정되었습니다.\n현재 화면을 닫고 새로고침 하시겠습니까?')){
+			window.close();
+			window.opener.parent.location.reload(true);
+		}	
+	}
+</c:if>
+
+if(${from eq 'remove'}){
+	alert("${removeMember.name}님의 정보가 삭제되었습니다.");
+	if(${empty loginUser}){
+		window.opener.location.href="<%=request.getContextPath()%>/member/list.do";
+	}
+	window.close();		
+}
+
+
 </script>
 

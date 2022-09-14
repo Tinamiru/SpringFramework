@@ -16,9 +16,9 @@
 		<typeAlias type="com.jsp.dto.MenuVO"  alias="menu"/>
 		<typeAlias type="com.jsp.dto.PdsVO"  alias="pds"/>
 		<typeAlias type="com.jsp.dto.AttachVO"  alias="attach"/>
-  	</typeAliases>  	
-  	
-  	
+  	</typeAliases>
+    
+	
   </configuration>
   
   

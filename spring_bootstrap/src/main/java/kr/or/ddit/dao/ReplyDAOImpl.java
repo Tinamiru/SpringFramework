@@ -10,10 +10,11 @@ import com.jsp.dao.ReplyDAO;
 import com.jsp.dto.ReplyVO;
 
 public class ReplyDAOImpl implements kr.or.ddit.dao.ReplyDAO {
+	
 
 	private SqlSession session;
 	private ReplyDAO replyDAO;
-
+		
 	public void setSession(SqlSession session) {
 		this.session = session;
 	}
@@ -30,13 +31,11 @@ public class ReplyDAOImpl implements kr.or.ddit.dao.ReplyDAO {
 	@Override
 	public void updateReply(ReplyVO reply) throws SQLException {
 		replyDAO.updateReply(session, reply);
-
 	}
 
 	@Override
 	public void deleteReply(int rno) throws SQLException {
 		replyDAO.deleteReply(session, rno);
-
 	}
 
 	@Override

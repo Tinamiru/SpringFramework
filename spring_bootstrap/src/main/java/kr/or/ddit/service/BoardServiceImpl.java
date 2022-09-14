@@ -7,10 +7,11 @@ import java.util.Map;
 
 import com.jsp.command.Criteria;
 import com.jsp.command.PageMaker;
-import kr.or.ddit.dao.BoardDAO;
-import kr.or.ddit.dao.ReplyDAO;
 import com.jsp.dto.BoardVO;
 import com.jsp.service.BoardService;
+
+import kr.or.ddit.dao.BoardDAO;
+import kr.or.ddit.dao.ReplyDAO;
 
 public class BoardServiceImpl implements BoardService {
 
@@ -27,12 +28,6 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public BoardVO getBoardForModify(int bno) throws SQLException {
-		BoardVO board = boardDAO.selectBoardByBno(bno);
-		return board;
-	}
-
-	@Override
 	public BoardVO getBoard(int bno) throws SQLException {
 		BoardVO board = boardDAO.selectBoardByBno(bno);
 		boardDAO.increaseViewCnt(bno);
@@ -40,40 +35,27 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void regist(BoardVO board) throws SQLException {
-		int bno = boardDAO.selectBoardSeqNext();
-
-		board.setBno(bno);
-
-		boardDAO.insertBoard(board);
-
-	}
-
-	@Override
-	public void modify(BoardVO board) throws SQLException {
-		boardDAO.updateBoard(board);
-	}
-
-	@Override
-	public void remove(int bno) throws SQLException {
-		boardDAO.deleteBoard(bno);
+	public BoardVO getBoardForModify(int bno) throws SQLException {
+		BoardVO board = boardDAO.selectBoardByBno(bno);
+		return board;
 	}
 
 	@Override
 	public Map<String, Object> getBoardList(Criteria cri) throws SQLException {
 
+		Criteria searchCri = (Criteria) cri;
+
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 
 		// 현재 page 번호에 맞는 리스트를 perPageNum 개수 만큼 가져오기.
-		List<BoardVO> boardList = boardDAO.selectBoardCriteria(cri);
-
-		if (boardList != null)
-			for (BoardVO board : boardList) {
-				board.setReplycnt(replyDAO.countReply(board.getBno()));
-			}
-
+		List<BoardVO> boardList = boardDAO.selectBoardCriteria(searchCri);
+		// reply count 입력
+		for (BoardVO board : boardList) {
+			int replycnt = replyDAO.countReply(board.getBno());
+			board.setReplycnt(replycnt);
+		}
 		// 전체 board 개수
-		int totalCount = boardDAO.selectBoardCriteriaTotalCount(cri);
+		int totalCount = boardDAO.selectBoardCriteriaTotalCount(searchCri);
 
 		// PageMaker 생성.
 		PageMaker pageMaker = new PageMaker();
@@ -84,5 +66,25 @@ public class BoardServiceImpl implements BoardService {
 		dataMap.put("pageMaker", pageMaker);
 
 		return dataMap;
+	}
+
+	@Override
+	public void regist(BoardVO board) throws SQLException {
+
+		int bno = boardDAO.selectBoardSeqNext();
+		board.setBno(bno);
+		boardDAO.insertBoard(board);
+	}
+
+	@Override
+	public void modify(BoardVO board) throws SQLException {
+
+		boardDAO.updateBoard(board);
+	}
+
+	@Override
+	public void remove(int bno) throws SQLException {
+
+		boardDAO.deleteBoard(bno);
 	}
 }

@@ -55,6 +55,7 @@ public class MemberController {
 		String url = "member/regist";
 		return url;
 	}
+	
 
 	@PostMapping(value = "/regist")
 	public String regist(MemberRegistCommand memberReq) throws Exception {
@@ -66,42 +67,12 @@ public class MemberController {
 		return url;
 	}
 
-	@RequestMapping(value = "/modify", method = RequestMethod.POST, produces = "text/plain;charset=utf-8")
-	public String modify(MemberModifyCommand modifyReq, HttpSession session, RedirectAttributes rttr) throws Exception {
-		String url = "redirect:/member/detail.do";
 
-		MemberVO member = modifyReq.toMember();
+	
 
-		// 신규파일 변경 및 기존파일 삭제
-		String oldPicture = memberService.getMember(member.getId()).getPicture();
-		if (modifyReq.getUploadPicture() != null && !modifyReq.getUploadPicture().isEmpty()) {
-			ResponseEntity<String> entity = picture(modifyReq.getPicture(), oldPicture);
-			String fileName = entity.getBody();
-
-			member.setPicture(fileName);
-		} else {
-			member.setPicture(oldPicture);
-		}
-		// DB 내용 수정
-		memberService.modify(member);
-
-		// 로그인한 사용자의 경우 수정된 정보로 session 업로드
-
-		rttr.addFlashAttribute("parentReload", false);
-		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
-		if (loginUser != null && member.getId().equals(loginUser.getId())) {
-			session.setAttribute("loginUser", member);
-			rttr.addFlashAttribute("parentReload", true);
-		}
-
-		rttr.addFlashAttribute("from", "modify");
-		rttr.addAttribute("id", member.getId());
-
-		return url;
-	}
-
-	@GetMapping(value = "/detail")
+	@GetMapping("/detail")
 	public String detail(String id, Model model) throws Exception {
+
 		String url = "member/detail";
 
 		MemberVO member = memberService.getMember(id);
@@ -109,8 +80,8 @@ public class MemberController {
 
 		return url;
 	}
-
-	@GetMapping(value = "/modifyForm")
+	
+	@GetMapping("/modifyForm")
 	public String modifyForm(String id, Model model) throws Exception {
 
 		String url = "member/modify";
@@ -124,7 +95,45 @@ public class MemberController {
 
 		return url;
 	}
+	
+	@RequestMapping(value = "/modify", method = RequestMethod.POST,
+										produces = "text/plain;charset=utf-8")
+	public String modify(MemberModifyCommand modifyReq, HttpSession session,
+						 RedirectAttributes rttr)throws Exception{
+		String url = "redirect:/member/detail.do";
 
+		MemberVO member = modifyReq.toMember();
+		
+		// 신규 파일 변경 및 기존 파일 삭제
+		String oldPicture = memberService.getMember(member.getId()).getPicture();
+		if (modifyReq.getUploadPicture() != null && !modifyReq.getUploadPicture().isEmpty()) {
+			
+			ResponseEntity<String> entity = picture(modifyReq.getPicture(),oldPicture);
+			String fileName = entity.getBody();
+			
+			System.out.println(fileName);
+			member.setPicture(fileName);
+		} else {
+			member.setPicture(oldPicture);
+		}
+		
+		//DB 내용 수정
+		memberService.modify(member);	
+		
+		// 로그인한 사용자의 경우 수정된 정보로 session 업로드
+		rttr.addFlashAttribute("parentReload",false);
+		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
+		if (loginUser != null && member.getId().equals(loginUser.getId())) {
+			session.setAttribute("loginUser", member);
+			rttr.addFlashAttribute("parentReload",true);
+		}
+		
+		rttr.addFlashAttribute("from","modify");
+		rttr.addAttribute("id",member.getId());
+		
+		return url;
+	}
+	
 	@Resource(name = "picturePath")
 	private String picturePath;
 
@@ -132,8 +141,8 @@ public class MemberController {
 	@ResponseBody
 	public ResponseEntity<String> picture(@RequestParam("pictureFile") MultipartFile multi, String oldPicture)
 			throws Exception {
-
 		ResponseEntity<String> entity = null;
+
 		/* 파일저장폴더설정 */
 		String uploadPath = picturePath;
 
@@ -158,20 +167,18 @@ public class MemberController {
 		entity = new ResponseEntity<String>(fileName, HttpStatus.OK);
 
 		return entity;
-
 	}
 
 	@GetMapping("/getPicture")
 	@ResponseBody
 	public ResponseEntity<byte[]> getPicture(String id) throws Exception {
+		ResponseEntity<byte[]> entity = null;
 
 		String picture = memberService.getMember(id).getPicture();
 
 		InputStream in = null;
-		ResponseEntity<byte[]> entity = null;
 		String imgPath = this.picturePath;
 		try {
-
 			in = new FileInputStream(new File(imgPath, picture));
 
 			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), HttpStatus.CREATED);
@@ -182,11 +189,12 @@ public class MemberController {
 
 		return entity;
 	}
-
+	
 	@GetMapping("/idCheck")
 	@ResponseBody
 	public ResponseEntity<String> idCheck(String id) throws Exception {
 		ResponseEntity<String> entity = null;
+
 		MemberVO member = memberService.getMember(id);
 
 		if (member != null) {
@@ -194,15 +202,17 @@ public class MemberController {
 		} else {
 			entity = new ResponseEntity<String>("", HttpStatus.OK);
 		}
+
 		return entity;
 	}
-
+	
+	
 	@RequestMapping(value = "/remove", method = RequestMethod.GET)
 	public String remove(String id, HttpSession session, RedirectAttributes rttr) throws Exception {
 		String url = "redirect:/member/detail.do";
-
-		MemberVO member = null;
-
+		
+		MemberVO member=null;
+		
 		// 이미지 파일을 삭제
 		member = memberService.getMember(id);
 		String savePath = this.picturePath;
@@ -210,20 +220,23 @@ public class MemberController {
 		if (imageFile.exists()) {
 			imageFile.delete();
 		}
-
-		// DB 삭제
+		
+		//DB삭제
 		memberService.remove(id);
-
+		
+		// 삭제되는 회원이 로그인 회원인경우 로그아웃 해야함.
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
-		if (loginUser != null && loginUser.getId().equals(member.getId())) {
+		if (loginUser!=null && loginUser.getId().equals(member.getId())) {
 			session.invalidate();
 		}
 
-		rttr.addFlashAttribute("removeMember", member);
-		rttr.addFlashAttribute("from", "remove");
-
-		rttr.addAttribute("id", id);
-
+		
+		rttr.addFlashAttribute("removeMember",member);		
+		rttr.addFlashAttribute("from","remove");
+		
+		rttr.addAttribute("id",id);
+		
 		return url;
 	}
+	
 }

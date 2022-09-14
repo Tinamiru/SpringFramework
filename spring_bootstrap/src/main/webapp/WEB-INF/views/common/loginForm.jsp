@@ -52,4 +52,12 @@
 	
   </div>    
 
+<c:if test="${!empty msg }">
+	<script>
+		alert('${msg}');
+	</script>
+</c:if>
+	
+	
+	
 

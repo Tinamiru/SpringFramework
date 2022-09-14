@@ -107,9 +107,29 @@
     </section>
 
 <script>
-function submit_go(url,pno){	
-	location.href=url+"?pno="+pno;
-}
+	function submit_go(url,pno){	
+		location.href=url+"?pno="+pno;
+	}
+	
+	<c:if test="${form eq 'modify'}">
+		alert("정상적으로 수정되었습니다.");
+	</c:if>
+	
+	 <c:if test="${from eq 'remove'}">
+	  	alert("삭제되었습니다.");
+	 	window.close();
+	 	window.opener.location.reload();
+	 </c:if>
 </script>    
  
 </body>
+
+
+
+
+
+
+
+
+
+

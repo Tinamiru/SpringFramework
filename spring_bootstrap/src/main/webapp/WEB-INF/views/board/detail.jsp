@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <title>게시글 상세</title>
@@ -164,6 +165,19 @@ function remove_go(){
 	}
 }
 </script>
+
+<c:if test="${from eq 'modify'}" >
+	<script>
+		alert("정상적으로 수정되었습니다.");
+	</script>
+</c:if>
+<c:if test="${from eq 'remove'}" >
+	<script>
+		alert("삭제되었습니다.");
+		window.close();
+		window.opener.location.reload();
+	</script>
+</c:if>
 
 <%@ include file="./reply_js.jsp" %>
 </body>

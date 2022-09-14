@@ -9,14 +9,14 @@ import com.jsp.dao.AttachDAO;
 import com.jsp.dto.AttachVO;
 
 public class AttachDAOImpl implements kr.or.ddit.dao.AttachDAO {
-
+	
 	private SqlSession session;
-
+	private AttachDAO attachDAO; 
+	
+	
 	public void setSession(SqlSession session) {
 		this.session = session;
 	}
-
-	private AttachDAO attachDAO;
 
 	public void setAttachDAO(AttachDAO attachDAO) {
 		this.attachDAO = attachDAO;

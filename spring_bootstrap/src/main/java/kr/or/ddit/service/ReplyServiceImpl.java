@@ -7,24 +7,27 @@ import java.util.Map;
 
 import com.jsp.command.Criteria;
 import com.jsp.command.PageMaker;
-import kr.or.ddit.dao.ReplyDAO;
 import com.jsp.dto.ReplyVO;
 import com.jsp.service.ReplyService;
 
+import kr.or.ddit.dao.ReplyDAO;
+
 public class ReplyServiceImpl implements ReplyService {
+	
 	private ReplyDAO replyDAO;
 
 	public void setReplyDAO(ReplyDAO replyDAO) {
 		this.replyDAO = replyDAO;
 	}
 
+	
 	@Override
-	public Map<String, Object> getReplyList(int bno, Criteria cri) throws SQLException {
+	public Map<String, Object> getReplyList(int bno,Criteria cri) throws SQLException {
 
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 
 		List<ReplyVO> replyList = replyDAO.selectReplyListPage(bno, cri);
-
+		
 		int count = replyDAO.countReply(bno);
 
 		PageMaker pageMaker = new PageMaker();
@@ -35,20 +38,10 @@ public class ReplyServiceImpl implements ReplyService {
 		dataMap.put("pageMaker", pageMaker);
 
 		return dataMap;
-
-	}
-
-	@Override
-	public int getReplyListCount(int bno) throws SQLException {
-
-		int count = replyDAO.countReply(bno);
-		return count;
-
 	}
 
 	@Override
 	public void registReply(ReplyVO reply) throws SQLException {
-
 		int rno = replyDAO.selectReplySeqNextValue();
 		reply.setRno(rno);
 
@@ -58,13 +51,20 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Override
 	public void modifyReply(ReplyVO reply) throws SQLException {
+
 		replyDAO.updateReply(reply);
+
 	}
 
 	@Override
 	public void removeReply(int rno) throws SQLException {
-		replyDAO.deleteReply(rno);
 
+		replyDAO.deleteReply(rno);
 	}
 
+	@Override
+	public int getReplyListCount(int bno) throws SQLException {
+		int count = replyDAO.countReply(bno);
+		return count;
+	}
 }

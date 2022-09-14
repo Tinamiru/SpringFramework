@@ -19,10 +19,6 @@
 	<bean id="fileUploadPath" class="java.lang.String">
 		<constructor-arg value="${pds.upload}"/>
 	</bean>
-	
-<!-- 	<bean id="loginUserLogSavePath" class="java.lang.String"> -->
-<!-- 		<constructor-arg value="${login.user.log}" /> -->
-<!-- 	</bean> -->
 			
 
 	<!-- Repository -->	

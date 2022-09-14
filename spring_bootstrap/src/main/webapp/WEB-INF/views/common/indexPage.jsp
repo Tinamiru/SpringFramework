@@ -78,7 +78,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </li>
        <c:forEach items="${menuList }" var="menu">
 	      <li class="nav-item d-none d-sm-inline-block">
-	      	<a href="javascript:subMenu_go('${menu.mcode }');goPage('${menu.murl}','${menu.mcode }');" class="nav-link"><i class="${menu.micon}"></i>&nbsp;${menu.mname }</a>
+	      	<a href="javascript:subMenu_go('${menu.mcode }');goPage('<%=request.getContextPath() %>${menu.murl}','${menu.mcode }');" class="nav-link"><i class="${menu.micon}"></i>&nbsp;${menu.mname }</a>
 	      </li>
       </c:forEach>	
     

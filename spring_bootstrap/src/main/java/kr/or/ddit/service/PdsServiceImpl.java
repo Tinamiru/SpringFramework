@@ -8,11 +8,12 @@ import java.util.Map;
 import com.jsp.command.Criteria;
 import com.jsp.command.PageMaker;
 import com.jsp.controller.MakeFileName;
-import kr.or.ddit.dao.AttachDAO;
-import kr.or.ddit.dao.PdsDAO;
 import com.jsp.dto.AttachVO;
 import com.jsp.dto.PdsVO;
 import com.jsp.service.PdsService;
+
+import kr.or.ddit.dao.AttachDAO;
+import kr.or.ddit.dao.PdsDAO;
 
 public class PdsServiceImpl implements PdsService {
 
@@ -31,7 +32,9 @@ public class PdsServiceImpl implements PdsService {
 	@Override
 	public Map<String, Object> getList(Criteria cri) throws SQLException {
 
-		List<PdsVO> pdsList = pdsDAO.selectPdsCriteria(cri);
+		Criteria searchCri = (Criteria) cri;
+
+		List<PdsVO> pdsList = pdsDAO.selectPdsCriteria(searchCri);
 
 		if (pdsList != null)
 			for (PdsVO pds : pdsList)
@@ -39,7 +42,7 @@ public class PdsServiceImpl implements PdsService {
 
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setCri(cri);
-		pageMaker.setTotalCount(pdsDAO.selectPdsCriteriaTotalCount(cri));
+		pageMaker.setTotalCount(pdsDAO.selectPdsCriteriaTotalCount(searchCri));
 
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		dataMap.put("pdsList", pdsList);
@@ -54,20 +57,21 @@ public class PdsServiceImpl implements PdsService {
 		PdsVO pds = pdsDAO.selectPdsByPno(pno);
 		addAttachList(pds);
 
-		if (pds.getAttachList() != null)
+		if (pds != null && pds.getAttachList() != null) {
 			for (AttachVO attach : pds.getAttachList()) {
 				String originalFileName = MakeFileName.parseFileNameFromUUID(attach.getFileName(), "\\$\\$");
 				attach.setFileName(originalFileName);
 			}
+		}
 
 		return pds;
-
 	}
 
 	@Override
 	public void regist(PdsVO pds) throws SQLException {
 
 		int pno = pdsDAO.getSeqNextValue();
+
 		pds.setPno(pno);
 		pdsDAO.insertPds(pds);
 
@@ -84,17 +88,21 @@ public class PdsServiceImpl implements PdsService {
 	public void modify(PdsVO pds) throws SQLException {
 
 		pdsDAO.updatePds(pds);
+		// attachDAO.deleteAllAttach(pds.getPno());
+
 		if (pds.getAttachList() != null)
 			for (AttachVO attach : pds.getAttachList()) {
 				attach.setPno(pds.getPno());
 				attach.setAttacher(pds.getWriter());
 				attachDAO.insertAttach(attach);
+
 			}
 
 	}
 
 	@Override
 	public void remove(int pno) throws SQLException {
+
 		pdsDAO.deletePds(pno);
 	}
 
@@ -105,26 +113,15 @@ public class PdsServiceImpl implements PdsService {
 		pdsDAO.increaseViewCnt(pno);
 
 		addAttachList(pds);
-		if (pds.getAttachList() != null)
-			for (AttachVO attach : pds.getAttachList()) {
-				String originalFileName = MakeFileName.parseFileNameFromUUID(attach.getFileName(), "\\$\\$");
-				attach.setFileName(originalFileName);
-			}
+
 		return pds;
-
-	}
-
-	private void addAttachList(PdsVO pds) throws SQLException {
-		if (pds == null)
-			return;
-		int pno = pds.getPno();
-		List<AttachVO> attachList = attachDAO.selectAttachesByPno(pno);
-		pds.setAttachList(attachList);
 	}
 
 	@Override
 	public AttachVO getAttachByAno(int ano) throws SQLException {
+
 		AttachVO attach = attachDAO.selectAttachByAno(ano);
+
 		return attach;
 	}
 
@@ -133,6 +130,17 @@ public class PdsServiceImpl implements PdsService {
 
 		attachDAO.deleteAttach(ano);
 
+	}
+
+	private void addAttachList(PdsVO pds) throws SQLException {
+
+		if (pds == null)
+			return;
+
+		int pno = pds.getPno();
+		List<AttachVO> attachList = attachDAO.selectAttachesByPno(pno);
+
+		pds.setAttachList(attachList);
 	}
 
 }
