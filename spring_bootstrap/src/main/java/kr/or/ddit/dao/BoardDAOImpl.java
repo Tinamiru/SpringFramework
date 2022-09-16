@@ -59,6 +59,13 @@ public class BoardDAOImpl implements kr.or.ddit.dao.BoardDAO{
 		return boardDAO.selectBoardSeqNext(session);
 	}
 
+	@Override
+	public BoardVO selectBoardByImage(String imageFile) throws SQLException {
+		
+		BoardVO board = session.selectOne("Board-Mapper.selectBoardByImage",imageFile);
+		
+		return board;
+	}
 
 
 

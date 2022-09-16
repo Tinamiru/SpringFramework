@@ -5,11 +5,8 @@ import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.jsp.command.Criteria;
-import com.jsp.dao.MemberDAO;
 import com.jsp.dto.MemberVO;
 
 public class MemberDAOImpl implements MemberDAO {
@@ -68,4 +65,17 @@ public class MemberDAOImpl implements MemberDAO {
 
 	}
 
+	@Override
+	public MemberVO selectMemberByPicture(String picture) throws SQLException {
+		MemberVO member = session.selectOne("Member-Mapper.selectMemberByPicture",picture);		
+		return member;
+	}
+
 }
+
+
+
+
+
+
+

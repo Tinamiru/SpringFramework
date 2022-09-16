@@ -13,6 +13,7 @@ public interface BoardDAO {
 	int selectBoardCriteriaTotalCount( Criteria cri) throws SQLException;
 	
 	BoardVO selectBoardByBno ( int bno) throws SQLException;
+	BoardVO selectBoardByImage ( String imageFile) throws SQLException;
 	
 	void insertBoard( BoardVO board) throws SQLException;
 	
